@@ -14,7 +14,7 @@ export function BauhausHeader() {
           </p>
         </div>
 
-        <div className="relative mx-auto h-56 w-full max-w-sm">
+        <div className="hidden relative mx-auto h-56 w-full max-w-sm">
           <div className="absolute left-2 top-3 h-16 w-16 rounded-full border-4 border-[#121212] bg-[#D02020]" />
           <div className="absolute left-20 top-0 h-24 w-24 border-4 border-[#121212] bg-[#1040C0]" />
           <div className="absolute right-4 top-12 h-0 w-0 border-b-[88px] border-l-[52px] border-r-[52px] border-b-[#F0C020] border-l-transparent border-r-transparent" />
