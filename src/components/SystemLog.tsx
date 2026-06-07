@@ -13,10 +13,10 @@ export function SystemLog({ logs }: SystemLogProps) {
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-black tracking-[0.14em] uppercase">
+          <h2 className="text-2xl font-black tracking-[0.14em] uppercase text-[#F0C020]">
             System Log
           </h2>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] sm:text-sm">
+          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.08em] text-white/90 sm:text-sm">
             Timestamped event trace for queue, bot, and demo actions.
           </p>
         </div>
