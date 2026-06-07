@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bauhaus McDonald's Order Controller
 
-## Getting Started
+Frontend-only prototype for the `feedmepos/se-take-home-assignment` frontend option. The app demonstrates a VIP-priority cooking queue, multiple concurrent cooking bots, cancellation on bot removal, and a timestamped event log in a Bauhaus-inspired dashboard.
 
-First, run the development server:
+## Assignment Choice
+
+Frontend
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- React hooks
+- In-memory state only
+
+## How to Run Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How to Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Deployment Suggestion
 
-To learn more about Next.js, take a look at the following resources:
+Deploy to Vercel for the simplest public hosting path for a Next.js frontend prototype.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/hooks/useOrderController.ts` is the single source of truth for all order, bot, timer, and log behavior.
+- `src/lib/orderQueue.ts` owns VIP/NORMAL insertion rules and queue position lookup.
+- `src/lib/time.ts` owns timestamp formatting and countdown math.
+- UI components stay presentation-focused and receive data plus actions from the hook.
 
-## Deploy on Vercel
+## Requirement Checklist
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [x] New Normal Order creates a unique increasing order number in `pendingOrders`
+- [x] New VIP Order creates a unique increasing order number and inserts after existing VIPs but before normal orders
+- [x] Order numbers are unique and increasing within the session
+- [x] `+ Bot` creates a new bot and immediately assigns the first pending order when available
+- [x] Each bot processes only one order at a time
+- [x] Each order takes exactly 10 seconds to complete after pickup
+- [x] Completed orders move from PROCESSING to COMPLETE after 10 seconds
+- [x] Bots automatically pick the next pending order after completion
+- [x] Bots become IDLE when no pending order remains
+- [x] `- Bot` removes the newest bot
+- [x] Removing the newest processing bot cancels its work and returns the order to the pending queue with VIP/NORMAL priority preserved
+- [x] No persistence, backend, database, or authentication
+- [x] Single-page dashboard includes header, controls, pending, processing, completed, and system log sections
+- [x] Order cards display number, type, status, and queue position when pending
+- [x] Bot cards display bot number, status, current order, and visible countdown
+- [x] System log shows timestamped major lifecycle events
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## VIP Queue Behavior
+
+VIP orders preserve FIFO among themselves while always staying ahead of all normal orders. Normal orders preserve FIFO among themselves. That means:
+
+- Existing VIPs stay first
+- New VIPs join after the current VIP block
+- Normal orders always remain behind the VIP block
+
+Example:
+
+- Add Normal `#1`
+- Add Normal `#2`
+- Add VIP `#3`
+- Pending becomes `#3`, `#1`, `#2`
+
+## Bot Removal Behavior
+
+When `- Bot` is clicked, the newest bot is removed.
+
+- If the newest bot is idle, it is simply removed.
+- If the newest bot is processing, its current order is cancelled immediately.
+- The cancelled order returns to `PENDING` using the same VIP/NORMAL queue rules.
+- Remaining idle bots can immediately pick that order back up if capacity exists.
+- The system log records both the cancellation and the bot removal.
+
+## Manual Test Scenario
+
+Use this sequence to verify the assignment behavior:
+
+1. Add Normal `#1`
+2. Add Normal `#2`
+3. Add VIP `#3`
+4. Confirm pending order order is `#3`, `#1`, `#2`
+5. Add 2 bots and confirm 2 orders process at the same time
+6. Add another VIP while bots are processing
+7. Remove the newest bot while it is processing
+8. Confirm its order returns to pending in the correct position
+9. Wait for processing to complete
+10. Confirm bots become idle when no pending orders remain
