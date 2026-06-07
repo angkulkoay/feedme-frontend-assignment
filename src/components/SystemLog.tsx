@@ -8,7 +8,7 @@ type SystemLogProps = {
 export function SystemLog({ logs }: SystemLogProps) {
   return (
     <section
-      className="bauhaus-section bg-[#121212] p-4 text-white"
+      className="dashboard-section bg-[#121212] p-4 text-white"
       data-testid="system-log"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -20,7 +20,7 @@ export function SystemLog({ logs }: SystemLogProps) {
             Timestamped event trace for queue, bot, and demo actions.
           </p>
         </div>
-        <div className="bauhaus-chip bg-[#F0C020] text-[#121212]">
+        <div className="status-badge bg-[#F0C020] text-[#121212]">
           {logs.length} events
         </div>
       </div>
@@ -32,7 +32,7 @@ export function SystemLog({ logs }: SystemLogProps) {
               key={log.id}
               className="grid gap-2 border-2 border-white bg-[#121212] p-3 sm:grid-cols-[8rem_1fr] sm:items-start"
             >
-              <div className="bauhaus-chip justify-self-start bg-white text-[#121212]">
+              <div className="status-badge justify-self-start bg-white text-[#121212]">
                 {formatTimestamp(log.timestamp)}
               </div>
               <p className="text-sm font-semibold uppercase tracking-[0.08em]">
@@ -41,7 +41,7 @@ export function SystemLog({ logs }: SystemLogProps) {
             </div>
           ))
         ) : (
-          <p className="bauhaus-empty border-white text-white">
+          <p className="empty-state border-white text-white">
             No events yet. Start the demo to populate the system log.
           </p>
         )}

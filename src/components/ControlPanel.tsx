@@ -9,13 +9,13 @@ type ControlPanelProps = {
 
 const buttonStyles = {
   normal:
-    "bauhaus-button bg-white px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-[#121212]",
-  vip: "bauhaus-button bg-[#D02020] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-white",
-  bot: "bauhaus-button bg-[#1040C0] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-white",
+    "dashboard-button bg-white px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-[#121212]",
+  vip: "dashboard-button bg-[#D02020] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-white",
+  bot: "dashboard-button bg-[#1040C0] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-white",
   remove:
-    "bauhaus-button bg-[#F0C020] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-[#121212] disabled:opacity-50",
+    "dashboard-button bg-[#F0C020] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-[#121212] disabled:opacity-50",
   reset:
-    "bauhaus-button bg-[#121212] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-white",
+    "dashboard-button bg-[#121212] px-4 py-3 text-sm font-black tracking-[0.12em] uppercase text-white",
 };
 
 export function ControlPanel({
@@ -27,7 +27,7 @@ export function ControlPanel({
   onReset,
 }: ControlPanelProps) {
   return (
-    <section className="bauhaus-panel bg-[#F8F4EA] p-5">
+    <section className="dashboard-panel bg-[#F8F4EA] p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-black tracking-[0.14em] uppercase">
@@ -37,7 +37,7 @@ export function ControlPanel({
             Generate orders, scale bots, and reset the full demo state.
           </p>
         </div>
-        <div className="bauhaus-chip bg-white">Active Bots: {botCount}</div>
+        <div className="status-badge bg-white">Active Bots: {botCount}</div>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">

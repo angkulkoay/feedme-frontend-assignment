@@ -16,7 +16,7 @@ export function BotPanel({
 
   return (
     <section
-      className="bauhaus-section flex min-h-[26rem] flex-col bg-[#1040C0] p-4 text-white"
+      className="dashboard-section flex min-h-[26rem] flex-col bg-[#1040C0] p-4 text-white"
       data-testid="bot-panel"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
@@ -29,7 +29,7 @@ export function BotPanel({
             10 seconds.
           </p>
         </div>
-        <div className="bauhaus-chip bg-white text-[#121212]">
+        <div className="status-badge bg-white text-[#121212]">
           {bots.length} bots
         </div>
       </div>
@@ -48,7 +48,7 @@ export function BotPanel({
             return (
               <article
                 key={bot.id}
-                className="bauhaus-card flex flex-col gap-3 bg-white p-4 text-[#121212]"
+                className="dashboard-card flex flex-col gap-3 bg-white p-4 text-[#121212]"
                 data-testid={`bot-card-${bot.id}`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -61,7 +61,7 @@ export function BotPanel({
                     </h3>
                   </div>
                   <div
-                    className={`bauhaus-chip ${
+                    className={`status-badge ${
                       bot.status === "PROCESSING"
                         ? "bg-[#D02020] text-white"
                         : "bg-[#F0C020] text-[#121212]"
@@ -73,7 +73,7 @@ export function BotPanel({
 
                 {currentOrder ? (
                   <div className="space-y-2">
-                    <div className="bauhaus-chip inline-flex bg-[#1040C0] text-white">
+                    <div className="status-badge inline-flex bg-[#1040C0] text-white">
                       Order #{currentOrder.id}
                     </div>
                     <p className="text-sm font-bold uppercase tracking-[0.08em]">
@@ -84,7 +84,7 @@ export function BotPanel({
                     </p>
                   </div>
                 ) : (
-                  <div className="bauhaus-empty bg-[#F8F4EA]">
+                  <div className="empty-state bg-[#F8F4EA]">
                     Idle and waiting for the next order.
                   </div>
                 )}
@@ -93,7 +93,7 @@ export function BotPanel({
           })
         ) : (
           <div
-            className="bauhaus-card flex items-center justify-center bg-white p-6 text-center text-[#121212]"
+            className="dashboard-card flex items-center justify-center bg-white p-6 text-center text-[#121212]"
             data-testid="bot-empty-state"
           >
             <p className="text-lg font-black uppercase tracking-[0.1em]">

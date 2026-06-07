@@ -19,7 +19,7 @@ export function QueueColumn({
 }: QueueColumnProps) {
   return (
     <section
-      className="bauhaus-section flex min-h-[26rem] flex-col p-4"
+      className="dashboard-section flex min-h-[26rem] flex-col p-4"
       data-testid={testId}
     >
       <div className="mb-4 flex items-start justify-between gap-3">
@@ -31,7 +31,7 @@ export function QueueColumn({
             {description}
           </p>
         </div>
-        <div className={`bauhaus-chip shrink-0 ${accentClassName}`}>
+        <div className={`status-badge shrink-0 ${accentClassName}`}>
           {count} items
         </div>
       </div>

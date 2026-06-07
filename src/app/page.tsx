@@ -1,8 +1,8 @@
 "use client";
 
-import { BauhausHeader } from "@/components/BauhausHeader";
 import { BotPanel } from "@/components/BotPanel";
 import { ControlPanel } from "@/components/ControlPanel";
+import { Header } from "@/components/Header";
 import { OrderCard } from "@/components/OrderCard";
 import { QueueColumn } from "@/components/QueueColumn";
 import { SystemLog } from "@/components/SystemLog";
@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white px-4 py-6 text-[#121212] sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <BauhausHeader />
+        <Header />
 
         <ControlPanel
           botCount={bots.length}
@@ -55,7 +55,7 @@ export default function Home() {
                 />
               ))
             ) : (
-              <p className="bauhaus-empty">
+              <p className="empty-state">
                 No pending orders. Add one from the control panel.
               </p>
             )}
@@ -79,7 +79,7 @@ export default function Home() {
                 <OrderCard key={order.id} order={order} />
               ))
             ) : (
-              <p className="bauhaus-empty">
+              <p className="empty-state">
                 Completed orders will stack here after their 10-second cook
                 cycle.
               </p>

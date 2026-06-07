@@ -1,6 +1,6 @@
-export function BauhausHeader() {
+export function Header() {
   return (
-    <section className="bauhaus-section relative overflow-hidden bg-[#F8F4EA] p-6 sm:p-8">
+    <section className="dashboard-section relative overflow-hidden bg-[#F8F4EA] p-6 sm:p-8">
       <div className="grid gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
         <div className="relative z-10 space-y-4">
           <p className="inline-block border-2 border-[#121212] bg-[#F0C020] px-3 py-1 text-xs font-black tracking-[0.22em] uppercase">

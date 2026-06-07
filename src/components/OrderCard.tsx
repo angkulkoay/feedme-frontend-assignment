@@ -18,7 +18,7 @@ const statusClasses: Record<Order["status"], string> = {
 
 export function OrderCard({ order, queuePosition }: OrderCardProps) {
   return (
-    <article className="bauhaus-card p-4" data-testid={`order-card-${order.id}`}>
+    <article className="dashboard-card p-4" data-testid={`order-card-${order.id}`}>
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-bold tracking-[0.1em] uppercase">
@@ -28,17 +28,17 @@ export function OrderCard({ order, queuePosition }: OrderCardProps) {
             #{order.id}
           </h3>
         </div>
-        <div className={`bauhaus-chip ${typeClasses[order.type]}`}>
+        <div className={`status-badge ${typeClasses[order.type]}`}>
           {order.type}
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <div className={`bauhaus-chip ${statusClasses[order.status]}`}>
+        <div className={`status-badge ${statusClasses[order.status]}`}>
           {order.status}
         </div>
         {typeof queuePosition === "number" ? (
-          <div className="bauhaus-chip bg-white">
+          <div className="status-badge bg-white">
             Queue Position: {queuePosition}
           </div>
         ) : null}

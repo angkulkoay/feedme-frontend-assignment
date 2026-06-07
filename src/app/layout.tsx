@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bauhaus Order Controller",
+  title: "Order Controller Dashboard",
   description:
-    "Frontend-only Bauhaus dashboard prototype for the McDonald's cooking bot order controller assignment.",
+    "Frontend-only order controller dashboard prototype for the McDonald's cooking bot assignment.",
 };
 
 export default function RootLayout({
