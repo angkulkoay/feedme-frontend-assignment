@@ -19,6 +19,7 @@ export default function Home() {
     currentTime,
     addNormalOrder,
     addVipOrder,
+    cancelPendingOrder,
     addBot,
     removeBot,
     reset,
@@ -51,6 +52,7 @@ export default function Home() {
                 <OrderCard
                   key={order.id}
                   order={order}
+                  onCancel={cancelPendingOrder}
                   queuePosition={getQueuePosition(pendingOrders, order.id)}
                 />
               ))

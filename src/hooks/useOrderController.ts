@@ -5,13 +5,15 @@ import { enqueueOrder, requeueOrder } from "@/lib/orderQueue";
 import { ORDER_PROCESSING_MS } from "@/lib/time";
 
 export type OrderType = "VIP" | "NORMAL";
-export type OrderStatus = "PENDING" | "PROCESSING" | "COMPLETE";
+export type OrderStatus = "PENDING" | "PROCESSING" | "COMPLETE" | "CANCELLED";
 
 export type Order = {
   id: number;
   type: OrderType;
   status: OrderStatus;
   createdAt: number;
+  lastPendingIndex?: number;
+  lastPendingTypeIndex?: number;
   startedAt?: number;
   completedAt?: number;
 };
@@ -89,6 +91,7 @@ function assignPendingToIdleBots(
   state: ControllerState,
   now: number,
 ): { state: ControllerState; assignedBotIds: number[] } {
+  const pendingOrderSnapshot = [...state.pendingOrders];
   const pendingOrders = [...state.pendingOrders];
   const processingOrders = [...state.processingOrders];
   const bots = [...state.bots];
@@ -102,14 +105,36 @@ function assignPendingToIdleBots(
       continue;
     }
 
-    const nextOrder = pendingOrders.shift();
+    const nextOrderIndex = pendingOrders.findIndex(
+      (order) => order.status === "PENDING",
+    );
+
+    if (nextOrderIndex === -1) {
+      break;
+    }
+
+    const [nextOrder] = pendingOrders.splice(nextOrderIndex, 1);
 
     if (!nextOrder) {
       break;
     }
 
+    const originalPendingIndex = pendingOrderSnapshot.findIndex(
+      (order) => order.id === nextOrder.id,
+    );
+    const originalPendingTypeIndex = pendingOrderSnapshot
+      .filter(
+        (order) =>
+          order.type === nextOrder.type && order.status !== "CANCELLED",
+      )
+      .findIndex((order) => order.id === nextOrder.id);
+
     processingOrders.push({
       ...nextOrder,
+      lastPendingIndex:
+        originalPendingIndex === -1 ? nextOrderIndex : originalPendingIndex,
+      lastPendingTypeIndex:
+        originalPendingTypeIndex === -1 ? 0 : originalPendingTypeIndex,
       status: "PROCESSING",
       startedAt: now,
       completedAt: undefined,
@@ -180,6 +205,8 @@ function processCompletedOrders(
         {
           ...completedOrder,
           status: "COMPLETE",
+          lastPendingIndex: undefined,
+          lastPendingTypeIndex: undefined,
           completedAt: now,
         },
         ...completedOrders,
@@ -320,6 +347,37 @@ export function useOrderController() {
     });
   }, []);
 
+  const cancelPendingOrder = useCallback((orderId: number) => {
+    const now = Date.now();
+
+    setControllerState((previousState) => {
+      const orderIndex = previousState.pendingOrders.findIndex(
+        (order) => order.id === orderId && order.status === "PENDING",
+      );
+
+      if (orderIndex === -1) {
+        return previousState;
+      }
+
+      const pendingOrders = [...previousState.pendingOrders];
+      const targetOrder = pendingOrders[orderIndex];
+
+      pendingOrders[orderIndex] = {
+        ...targetOrder,
+        status: "CANCELLED",
+      };
+
+      return appendLog(
+        {
+          ...previousState,
+          pendingOrders,
+        },
+        `Order #${targetOrder.id} (${targetOrder.type}) cancelled in pending.`,
+        now,
+      );
+    });
+  }, []);
+
   const removeBot = useCallback(() => {
     const now = Date.now();
 
@@ -345,13 +403,20 @@ export function useOrderController() {
           const pendingOrder: Order = {
             ...orderToReturn,
             status: "PENDING",
+            lastPendingIndex: undefined,
+            lastPendingTypeIndex: undefined,
             startedAt: undefined,
             completedAt: undefined,
           };
 
           nextState = {
             ...nextState,
-            pendingOrders: requeueOrder(previousState.pendingOrders, pendingOrder),
+            pendingOrders: requeueOrder(
+              previousState.pendingOrders,
+              pendingOrder,
+              orderToReturn.lastPendingIndex,
+              orderToReturn.lastPendingTypeIndex,
+            ),
             processingOrders,
           };
 
@@ -386,6 +451,7 @@ export function useOrderController() {
     logs: controllerState.logs,
     addNormalOrder,
     addVipOrder,
+    cancelPendingOrder,
     addBot,
     removeBot,
     reset,

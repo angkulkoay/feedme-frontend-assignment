@@ -3,6 +3,7 @@ import type { Order } from "@/hooks/useOrderController";
 type OrderCardProps = {
   order: Order;
   queuePosition?: number | null;
+  onCancel?: (orderId: number) => void;
 };
 
 const typeClasses: Record<Order["type"], string> = {
@@ -14,9 +15,10 @@ const statusClasses: Record<Order["status"], string> = {
   PENDING: "bg-white text-[#121212]",
   PROCESSING: "bg-[#1040C0] text-white",
   COMPLETE: "bg-[#121212] text-white",
+  CANCELLED: "bg-[#D02020] text-white",
 };
 
-export function OrderCard({ order, queuePosition }: OrderCardProps) {
+export function OrderCard({ order, queuePosition, onCancel }: OrderCardProps) {
   return (
     <article className="dashboard-card p-4" data-testid={`order-card-${order.id}`}>
       <div className="mb-3 flex items-start justify-between gap-3">
@@ -43,6 +45,20 @@ export function OrderCard({ order, queuePosition }: OrderCardProps) {
           </div>
         ) : null}
       </div>
+
+      {onCancel ? (
+        <div className="mt-4">
+          <button
+            className="dashboard-button bg-[#121212] px-3 py-2 text-xs font-black tracking-[0.12em] uppercase text-white disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid={`cancel-order-button-${order.id}`}
+            disabled={order.status !== "PENDING"}
+            onClick={() => onCancel(order.id)}
+            type="button"
+          >
+            {order.status === "CANCELLED" ? "Cancelled" : "Cancel Order"}
+          </button>
+        </div>
+      ) : null}
     </article>
   );
 }
